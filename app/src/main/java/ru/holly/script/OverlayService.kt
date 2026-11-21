@@ -19,37 +19,78 @@ class OverlayService : Service() {
     override fun onCreate() {
         super.onCreate()
         wm = getSystemService(WINDOW_SERVICE) as WindowManager
-        addWatermark(); addStartButton()
+        addWatermark()
+        addStartButton()
     }
 
     private fun addWatermark() {
-        val lp = WindowManager.LayoutParams(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, PixelFormat.TRANSLUCENT).apply { gravity = Gravity.CENTER }
+        val lp = WindowManager.LayoutParams(
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+            PixelFormat.TRANSLUCENT
+        ).apply { gravity = Gravity.CENTER }
         val alpha = (SettingsStore.watermarkAlpha / 100f * 255).toInt()
-        val tv = TextView(this).apply { text = getString(R.string.watermark); setTextColor(Color.argb(alpha, 255, 255, 255)); textSize = 18f }
-        wm.addView(tv, lp); watermark = tv
+        val tv = TextView(this).apply {
+            text = getString(R.string.watermark)
+            setTextColor(Color.argb(alpha, 255, 255, 255))
+            textSize = 18f
+        }
+        wm.addView(tv, lp)
+        watermark = tv
     }
 
     private fun addStartButton() {
-        val lp = WindowManager.LayoutParams(140, 140, WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT).apply { gravity = Gravity.START or Gravity.TOP; x = 20; y = 300 }
+        val lp = WindowManager.LayoutParams(
+            140, 140,
+            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+            PixelFormat.TRANSLUCENT
+        ).apply {
+            gravity = Gravity.START or Gravity.TOP
+            x = 20
+            y = 300
+        }
         val b = TextView(this).apply {
-            text = "▶"; textSize = 36f; setTextColor(Color.WHITE); gravity = Gravity.CENTER; setBackgroundColor(Color.parseColor("#334FC3F7"))
-            setOnClickListener {
-                if (ClickerService.running) { ClickerService.running = false; b.text = "▶" }
-                else { ClickerService.running = true; b.text = "■"; engine.start(ClickerService.selectedScript) }
+            text = "▶"
+            textSize = 36f
+            setTextColor(Color.WHITE)
+            gravity = Gravity.CENTER
+            setBackgroundColor(Color.parseColor("#334FC3F7"))
+        }
+        b.setOnClickListener {
+            if (ClickerService.running) {
+                ClickerService.running = false
+                b.text = "▶"
+            } else {
+                ClickerService.running = true
+                b.text = "■"
+                engine.start(ClickerService.selectedScript)
             }
         }
         b.setOnTouchListener { v, e ->
             when (e.action) {
-                MotionEvent.ACTION_DOWN -> { lp.x = e.rawX.toInt() - 70; lp.y = e.rawY.toInt() - 70 }
-                MotionEvent.ACTION_MOVE -> { wm.updateViewLayout(v, lp) }
-            }; false
+                MotionEvent.ACTION_DOWN -> {
+                    lp.x = e.rawX.toInt() - 70
+                    lp.y = e.rawY.toInt() - 70
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    wm.updateViewLayout(v, lp)
+                }
+            }
+            false
         }
-        wm.addView(b, lp); btn = b
+        wm.addView(b, lp)
+        btn = b
     }
 
     override fun onDestroy() {
-        watermark?.let { runCatching { wm.removeView(it) } }; btn?.let { runCatching { wm.removeView(it) } }
-        ClickerService.running = false; super.onDestroy()
+        watermark?.let { runCatching { wm.removeView(it) } }
+        btn?.let { runCatching { wm.removeView(it) } }
+        ClickerService.running = false
+        super.onDestroy()
     }
+
     override fun onBind(i: Intent?): IBinder? = null
 }
