@@ -3,4 +3,5 @@
     <string name="welcome">ДОБРО ПОЖАЛОВАТЬ В</string>
     <string name="app_name_big">HolLy Script</string>
     <string name="watermark">t.me/HoLyScT</string>
+    <string name="accessibility_desc">HolLy Script: autoclicker and scripts overlay.</string>
 </resources>
