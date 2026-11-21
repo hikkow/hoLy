@@ -52,22 +52,26 @@ class ClickerService : AccessibilityService() {
         takeScreenshot(Display.DEFAULT_DISPLAY, mainExecutor, object : TakeScreenshotCallback {
             override fun onSuccess(s: ScreenshotResult) {
                 val hw = Bitmap.wrapHardwareBuffer(s.hardwareBuffer, s.colorSpace)
-                val bmp = hw.copy(Bitmap.Config.ARGB_8888, false); hw.recycle()
+                if (hw == null) { cb(""); return }
+                val bmp = hw.copy(Bitmap.Config.ARGB_8888, false)
+                hw.recycle()
                 val crop = Bitmap.createBitmap(bmp, a.x, a.y, b.x - a.x, b.y - a.y)
                 recognizer.process(InputImage.fromBitmap(crop, 0)).addOnSuccessListener { cb(it.text) }.addOnFailureListener { cb("") }
             }
             override fun onFailure(code: Int) { cb("") }
-        }, main)
+        })
     }
 
     fun capture(cb: (Bitmap?) -> Unit) {
         takeScreenshot(Display.DEFAULT_DISPLAY, mainExecutor, object : TakeScreenshotCallback {
             override fun onSuccess(s: ScreenshotResult) {
                 val hw = Bitmap.wrapHardwareBuffer(s.hardwareBuffer, s.colorSpace)
-                val bmp = hw.copy(Bitmap.Config.ARGB_8888, false); hw.recycle()
+                if (hw == null) { main.post { cb(null) }; return }
+                val bmp = hw.copy(Bitmap.Config.ARGB_8888, false)
+                hw.recycle()
                 main.post { cb(bmp) }
             }
             override fun onFailure(code: Int) { main.post { cb(null) } }
-        }, main)
+        })
     }
 }
