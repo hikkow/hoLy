@@ -14,7 +14,7 @@ class SettingsActivity : AppCompatActivity() {
         SettingsStore.init(this)
 
         val spSpeed = findViewById<Spinner>(R.id.spSpeed)
-        val speeds = listOf("⚡ Мгновенно (0 мс)", "🚀 Очень быстро (10 мс)", "⚡ Быстро (50 мс)", "🐢 Нормально (100 мс)")
+        val speeds = listOf("Instant (0 ms)", "Very fast (10 ms)", "Fast (50 ms)", "Normal (100 ms)")
         spSpeed.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, speeds)
         spSpeed.setSelection(when (SettingsStore.speedMs) { 0 -> 0; 10 -> 1; 50 -> 2; else -> 3 })
         spSpeed.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -27,9 +27,9 @@ class SettingsActivity : AppCompatActivity() {
         val sbAlpha = findViewById<SeekBar>(R.id.sbAlpha)
         val tvAlpha = findViewById<TextView>(R.id.tvAlpha)
         sbAlpha.max = 100; sbAlpha.progress = SettingsStore.watermarkAlpha
-        tvAlpha.text = "Прозрачность: ${SettingsStore.watermarkAlpha}%"
+        tvAlpha.text = "Transparency: ${SettingsStore.watermarkAlpha}%"
         sbAlpha.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(sb: SeekBar?, p: Int, f: Boolean) { SettingsStore.watermarkAlpha = p; tvAlpha.text = "Прозрачность: $p%" }
+            override fun onProgressChanged(sb: SeekBar?, p: Int, f: Boolean) { SettingsStore.watermarkAlpha = p; tvAlpha.text = "Transparency: $p%" }
             override fun onStartTrackingTouch(sb: SeekBar?) {}
             override fun onStopTrackingTouch(sb: SeekBar?) {}
         })
@@ -44,16 +44,15 @@ class SettingsActivity : AppCompatActivity() {
         }
         cb2.setOnCheckedChangeListener { _, _ -> saveMask() }; cb3.setOnCheckedChangeListener { _, _ -> saveMask() }; cb4.setOnCheckedChangeListener { _, _ -> saveMask() }
 
-        // КНОПКА АДМИН ПАНЕЛИ
         val btnAdmin = Button(this).apply {
-            text = "👑 Админ панель"; setTextColor(getColor(R.color.text_dim)); setBackgroundResource(R.drawable.card_red)
+            text = "Admin Panel"; setTextColor(getColor(R.color.text_dim)); setBackgroundResource(R.drawable.card_red)
             setOnClickListener {
-                val input = EditText(this@SettingsActivity).apply { hint = "Введите пароль админа"; inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD }
-                AlertDialog.Builder(this@SettingsActivity).setTitle("Доступ к админ-панели").setView(input)
-                    .setPositiveButton("Войти") { _, _ ->
+                val input = EditText(this@SettingsActivity).apply { hint = "Enter admin password"; inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD }
+                AlertDialog.Builder(this@SettingsActivity).setTitle("Admin Access").setView(input)
+                    .setPositiveButton("Enter") { _, _ ->
                         if (input.text.toString() == "seredkin2010!") startActivity(Intent(this@SettingsActivity, AdminActivity::class.java))
-                        else Toast.makeText(this@SettingsActivity, "Неверный пароль!", Toast.LENGTH_SHORT).show()
-                    }.setNegativeButton("Отмена", null).show()
+                        else Toast.makeText(this@SettingsActivity, "Wrong password!", Toast.LENGTH_SHORT).show()
+                    }.setNegativeButton("Cancel", null).show()
             }
         }
         (findViewById<LinearLayout>(R.id.rootSettingsLayout)).addView(btnAdmin)
