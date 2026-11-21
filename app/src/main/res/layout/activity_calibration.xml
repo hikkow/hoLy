@@ -67,7 +67,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="⏮ Назад"
+            android:text="Back"
             android:textAllCaps="false"/>
 
         <Button
@@ -75,11 +75,36 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="↻ Снимок"
+            android:text="Retake"
             android:textAllCaps="false"/>
 
         <Button
             android:id="@+id/btnSkip"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="
+            android:layout_weight="1"
+            android:text="Skip"
+            android:textAllCaps="false"/>
+
+        <Button
+            android:id="@+id/btnOk"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="OK"
+            android:textAllCaps="false"
+            android:backgroundTint="@color/accent"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvCoord"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="72dp"
+        android:layout_marginStart="16dp"
+        android:textColor="@color/accent2"
+        android:textSize="14sp"
+        android:textStyle="bold"/>
+
+</FrameLayout>
