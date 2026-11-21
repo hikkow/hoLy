@@ -43,7 +43,7 @@ class CalibrationActivity : AppCompatActivity() {
         tvHint = findViewById(R.id.tvHint); tvCoord = findViewById(R.id.tvCoord)
 
         if (!ClickerService.isRunning) {
-            Toast.makeText(this, "Включи HolLy Script в Специальных возможностях", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Enable HolLy Script in Accessibility", Toast.LENGTH_LONG).show()
             startActivity(android.content.Intent("android.settings.ACCESSIBILITY_SETTINGS")); finish(); return
         }
         findViewById<Button>(R.id.btnRetake).setOnClickListener { retake() }
@@ -51,9 +51,9 @@ class CalibrationActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnSkip).setOnClickListener { advance() }
         findViewById<Button>(R.id.btnOk).setOnClickListener {
             val p = pending
-            if (p == null) { Toast.makeText(this, "Сначала тапни пипеткой", Toast.LENGTH_SHORT).show(); return@setOnClickListener }
+            if (p == null) { Toast.makeText(this, "Tap with pipette first", Toast.LENGTH_SHORT).show(); return@setOnClickListener }
             PointsStore.set(this, TutorialData.steps[idx].key, p)
-            Toast.makeText(this, "✓ ${TutorialData.steps[idx].key} = ${p.x},${p.y}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "OK: ${TutorialData.steps[idx].key} = ${p.x},${p.y}", Toast.LENGTH_SHORT).show()
             advance()
         }
         ivFreeze.setOnTouchListener { _, e ->
@@ -67,7 +67,7 @@ class CalibrationActivity : AppCompatActivity() {
                     ivCross.visibility = View.GONE
                     pending = Point(e.rawX.toInt(), e.rawY.toInt())
                     freeze?.let { ivFreeze.setImageBitmap(drawMark(it, pending!!)) }
-                    tvCoord.text = "→ ${pending!!.x} : ${pending!!.y}" 
+                    tvCoord.text = "-> ${pending!!.x} : ${pending!!.y}" 
                 }
             }; true
         }
@@ -75,8 +75,8 @@ class CalibrationActivity : AppCompatActivity() {
     }
     private fun retake() {
         ClickerService.instance.capture { bmp ->
-            if (bmp == null) { Toast.makeText(this, "Скриншот недоступен", Toast.LENGTH_SHORT).show(); return@capture }
-            freeze = bmp; pending = null; ivFreeze.setImageBitmap(bmp); tvCoord.text = "Тапни нужную точку"
+            if (bmp == null) { Toast.makeText(this, "Screenshot unavailable", Toast.LENGTH_SHORT).show(); return@capture }
+            freeze = bmp; pending = null; ivFreeze.setImageBitmap(bmp); tvCoord.text = "Tap the point"
         }
     }
     private fun drawMark(src: Bitmap, p: Point): Bitmap {
@@ -89,11 +89,11 @@ class CalibrationActivity : AppCompatActivity() {
     }
     private fun advance() {
         if (idx < TutorialData.steps.size - 1) { idx++; render(); retake() }
-        else { Toast.makeText(this, "Все точки записаны 🥷", Toast.LENGTH_LONG).show(); finish() }
+        else { Toast.makeText(this, "All points saved", Toast.LENGTH_LONG).show(); finish() }
     }
     private fun render() {
         val st = TutorialData.steps[idx]
-        tvProgress.text = "ШАГ ${idx + 1}/${TutorialData.steps.size}  •  ${st.key}"
-        tvTitle.text = st.title; tvHint.text = st.hint; tvCoord.text = "Тапни нужную точку"
+        tvProgress.text = "STEP ${idx + 1}/${TutorialData.steps.size} - ${st.key}"
+        tvTitle.text = st.title; tvHint.text = st.hint; tvCoord.text = "Tap the point"
     }
 }
