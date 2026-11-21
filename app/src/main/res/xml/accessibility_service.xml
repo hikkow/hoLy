@@ -5,5 +5,5 @@
     android:accessibilityFlags="flagDefault|flagRetrieveInteractiveWindows"
     android:canPerformGestures="true"
     android:canRetrieveWindowContent="true"
-    android:description="HolLy Script: автокликер и скрипты поверх приложений."
+    android:description="@string/accessibility_desc"
     android:notificationTimeout="100"/>
